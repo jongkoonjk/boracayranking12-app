@@ -1,0 +1,56 @@
+import streamlit as st
+import pandas as pd
+
+# 1. 앱 페이지 설정 (웹 브라우저 탭에 표시될 이름과 레이아웃)
+st.set_page_config(page_title="보라카이 리조트 순위 TOP 12", layout="wide")
+
+# 2. 보라카이 TOP 12 리조트 데이터셋
+# 순위, 이름, 위치, 영상 주소, 특징을 포함합니다.
+resorts_data = [
+    {"순위": 1, "이름": "보라카이 샹그릴라", "지역": "야팍", "영상": "https://www.youtube.com/watch?v=68RCHvL8tYc", "특징": "설명이 필요 없는 보라카이 최고의 럭셔리, 프라이빗 비치"},
+    {"순위": 2, "이름": "보라카이 크림슨 리조트", "지역": "스테이션 0", "영상": "https://www.youtube.com/watch?v=FqN_2fS_KkE", "특징": "폼 파티와 인피니티 풀로 유명한 힙한 리조트"},
+    {"순위": 3, "이름": "보라카이 더린드 리조트", "지역": "스테이션 1", "영상": "https://www.youtube.com/watch?v=LqVv0e9X0eM", "특징": "화이트비치 끝자락의 세련된 디자인과 루프탑 풀"},
+    {"순위": 4, "이름": "보라카이 모벤픽 리조트", "지역": "스테이션 0", "영상": "https://www.youtube.com/watch?v=W0mIdf6IAtU", "특징": "프라이빗 비치와 매일 오후 진행되는 초콜릿 아워"},
+    {"순위": 5, "이름": "보라카이 디스커버리 리조트", "지역": "스테이션 1", "영상": "https://www.youtube.com/watch?v=3-A2-W965gM", "특징": "넓은 객실과 친절한 서비스, 가족 여행객의 성지"},
+    {"순위": 6, "이름": "보라카이 헤난 크리스탈 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=Y_G777z6lI4", "특징": "화이트비치 바로 앞, 바다를 보며 즐기는 인피니티 풀"},
+    {"순위": 7, "이름": "보라카이 만다린베이 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=mE9mK1Lq_8E", "특징": "최근 리뉴얼된 깔끔한 시설과 편리한 위치"},
+    {"순위": 8, "이름": "보라카이 헤난 리젠시 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=yW6hI1Y-E_0", "특징": "보라카이의 터줏대감, 거대한 규모와 다양한 수영장"},
+    {"순위": 9, "이름": "보라카이 헤난 팜 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=vV_X5iFclD8", "특징": "수영장과 연결된 풀 액세스 룸이 매력적인 곳"},
+    {"순위": 10, "이름": "보라카이 헤난 라군 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=T_7_jAks84M", "특징": "메인 로드와 가깝고 조용한 대형 수영장이 특징"},
+    {"순위": 11, "이름": "보라카이 헤난 파크 리조트", "지역": "스테이션 2", "영상": "https://www.youtube.com/watch?v=R9iY9YQf7fM", "특징": "디몰 근처 최고의 접근성, 실용적인 최신 리조트"},
+    {"순위": 12, "이름": "보라카이 헤난 프라임 리조트", "지역": "스테이션 1", "영상": "https://www.youtube.com/watch?v=Y_G777z6lI4", "특징": "비교적 한적한 스테이션 1의 화이트비치를 누리는 곳"}
+]
+
+df = pd.DataFrame(resorts_data)
+
+# 3. 앱 화면 구성
+st.title("🏝️ 보라카이 특급 리조트 순위 TOP 12")
+st.write("2026년 최신 랭킹입니다. 리조트를 선택해 생생한 영상을 확인하세요!")
+
+# 리조트 선택 메뉴
+selected_name = st.selectbox("궁금한 리조트를 선택하세요:", df["이름"])
+resort = df[df["이름"] == selected_name].iloc[0]
+
+st.divider()
+
+# 4. 상세 정보 및 영상 (좌우 분할 레이아웃)
+col1, col2 = st.columns([1, 1.5])
+
+with col1:
+    st.header(f"{resort['순위']}위. {resort['이름']}")
+    st.markdown(f"📍 **위치:** {resort['지역']}")
+    st.success(f"✨ **특징:** {resort['특징']}")
+    
+    # 예약 문의 버튼 (네이버 카페 연결)
+    cafe_url = "https://cafe.naver.com/boracaykorea"
+    st.link_button("🛎️ 예약 및 할인 문의하기 (네이버 카페)", cafe_url, use_container_width=True)
+    st.caption("※ 버튼을 누르면 예약 상담 카페로 이동합니다.")
+
+with col2:
+    st.write(f"### 🎥 {resort['이름']} 현장 영상")
+    st.video(resort['영상'])
+
+# 5. 하단 전체 순위표 요약
+st.divider()
+st.subheader("📊 보라카이 리조트 전체 순위표")
+st.dataframe(df[["순위", "이름", "지역", "특징"]], use_container_width=True, hide_index=True)
